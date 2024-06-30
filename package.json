@@ -4,17 +4,21 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsnd --respawn --clear src/app.ts",
-    "start": "rimraf ./dist && tsc",
-    "build": "npm run build && node dist/app.js "
+    "build": "rimraf dist && tsc",
+    "start": "npm run build && node dist/app.js "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^20.14.9",
     "rimraf": "^5.0.7",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.5.2"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
   }
 }
