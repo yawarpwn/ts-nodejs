@@ -17,10 +17,14 @@ export class Server {
   }
 
   async start() {
+    //Middlewares
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
     this.app.use(this.routes);
 
     this.app.listen(this.port, () => {
-      console.log("other app 1");
+      console.log("other app 2");
       console.log(`Server running on port ${this.port}`);
     });
   }

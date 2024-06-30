@@ -1,15 +1,13 @@
 import { Router, Request, Response } from "express";
+import { AuthControllers } from "./controllers";
 
 export class AuthRoutes {
   static get routes() {
     const router = Router();
+    const controller = new AuthControllers();
 
-    router.post("/login", (req: Request, res: Response) => {
-      res.json({ message: "login" });
-    });
-    router.post("/register", (req: Request, res: Response) => {
-      res.json({ message: "register" });
-    });
+    router.post("/login", controller.registerUser);
+    router.post("/register", controller.loginUser);
 
     return router;
   }
