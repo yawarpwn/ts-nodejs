@@ -10,9 +10,9 @@ export class AuthDataSourceImpl implements AuthDataSources {
     // Verificar si el correo existe
     // Hash de contraseña
     // Mapear respuesta a nuestra entidad
-    return new UserEntity(1, "pepe", "pepe@pe.com", "1234", "admin");
 
     try {
+      return new UserEntity(1, "pepe", "pepe@pe.com", "1234", "admin");
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
