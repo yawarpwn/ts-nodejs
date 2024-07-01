@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import { Response, Request } from "express";
 import { AuthModel } from "../models";
 import { CustomError } from "../domain";
@@ -27,7 +26,12 @@ export class AuthController {
 
     try {
       const user = await AuthModel.login(userDto!);
-      res.json({ user });
+
+      res
+        .cookie("auth-token", user.token, {
+          sameSite: "lax",
+        })
+        .json({ success: "user logged in", user: user.username });
     } catch (error) {
       if (error instanceof CustomError) {
         res.send({ error: error.message });

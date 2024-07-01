@@ -1,6 +1,7 @@
 import { createClient } from "@libsql/client";
 import bcrypt from "bcrypt";
 import { envs } from "../config/envs";
+import jsonWebToken from "jsonwebtoken";
 
 export const turso = createClient({
   url: envs.TURSO_DATABASE_URL,
@@ -9,6 +10,13 @@ export const turso = createClient({
 
 import { AuthDto } from "../controllers";
 import { CustomError } from "../domain";
+
+class UserLoginEntity {
+  constructor(
+    public readonly username: string,
+    public readonly token: string,
+  ) {}
+}
 
 class AuthEntity {
   constructor(
@@ -39,7 +47,14 @@ export class AuthModel {
 
     if (!isPasswordCorrect) throw CustomError.badRequest("Wrong password");
 
-    return user.rows[0];
+    //generate token
+    const token = jsonWebToken.sign(
+      { username: user.rows[0].username },
+      envs.JWT_SECRET_KEY,
+      { expiresIn: "1h" },
+    );
+
+    return new UserLoginEntity(username, token);
   }
 
   static async register(registerUserDto: AuthDto) {

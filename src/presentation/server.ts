@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import { appRoutes } from "../routes";
 import { authRoutes } from "../routes/auth";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,6 +17,8 @@ export class Server {
   async start() {
     //Middlewares
     this.app.use(express.json());
+    this.app.use(cors());
+    this.app.use(cookieParser());
     this.app.use(express.urlencoded({ extended: true }));
 
     this.app.use(authRoutes);
