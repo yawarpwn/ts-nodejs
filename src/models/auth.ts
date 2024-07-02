@@ -1,73 +1,35 @@
-import { createClient } from "@libsql/client";
 import bcrypt from "bcrypt";
-import { envs } from "../config/envs";
-import jsonWebToken from "jsonwebtoken";
+import { AuthUserService } from "../services";
+import { UserLogin } from "../types";
 
-export const turso = createClient({
-  url: envs.TURSO_DATABASE_URL,
-  authToken: envs.TURSO_AUTH_TOKEN,
-});
-
-import { AuthDto } from "../controllers";
-import { CustomError } from "../errors";
-
-class UserLoginEntity {
-  constructor(
-    public readonly username: string,
-    public readonly token: string,
-  ) {}
-}
-
-class AuthEntity {
-  constructor(
-    private readonly id: string,
-    private readonly username: string,
-    private readonly password: string,
-  ) {}
-}
+import { HttpError } from "../errors";
 
 export class AuthModel {
-  static async login(authDto: AuthDto) {
-    const { username, password } = authDto;
+  static async login(validUser: {
+    username: string;
+    password: string;
+  }): Promise<UserLogin> {
+    const { username, password } = validUser;
 
     //verify if exist username
-    const user = await turso.execute({
-      sql: "SELECT * FROM users WHERE username = ?",
-      args: [username],
-    });
-
-    if (user.rows.length === 0) throw CustomError.badRequest("User not found");
-    const { password: hashedPassword } = user.rows[0];
+    const user = await AuthUserService.findUser(username);
+    if (!user) throw HttpError.badRequest("User not found");
 
     //verify if password is correct
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      hashedPassword as string,
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordCorrect) throw CustomError.badRequest("Wrong password");
+    if (!isPasswordCorrect) throw HttpError.badRequest("Wrong password");
 
-    //generate token
-    const token = jsonWebToken.sign(
-      { username: user.rows[0].username },
-      envs.JWT_SECRET_KEY,
-      { expiresIn: "1h" },
-    );
-
-    return new UserLoginEntity(username, token);
+    return user;
   }
 
-  static async register(registerUserDto: AuthDto) {
+  static async register(registerUserDto: UserLogin) {
     const { username, password } = registerUserDto;
 
     //1. Verify if user not exists
-    const user = await turso.execute({
-      sql: "SELECT * FROM users WHERE username = ?",
-      args: [username],
-    });
+    const user = await AuthUserService.findUser(username);
 
-    if (user.rows.length > 0)
-      throw CustomError.badRequest("Username already exists");
+    if (!user) throw HttpError.badRequest("Username already exists");
 
     try {
       //2. hash password
@@ -75,15 +37,11 @@ export class AuthModel {
 
       //3. insert user in db
       const id = crypto.randomUUID();
-      await turso.execute({
-        sql: "INSERT INTO users (id, username, password) VALUES (?, ?, ?)",
-        args: [id, username, hashedPassword],
-      });
 
-      return new AuthEntity(id, username, hashedPassword);
+      return { id, username, hashedPassword };
     } catch (error) {
       console.log(error);
-      throw CustomError.internalServerError("error inserting in db");
+      throw HttpError.internalServerError("error inserting in db");
     }
 
     //4. generate token

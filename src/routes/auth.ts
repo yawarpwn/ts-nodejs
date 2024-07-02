@@ -1,7 +1,11 @@
 import { Router } from "express";
 import { AuthController } from "../controllers";
 
-export const authRoutes = Router();
-
-authRoutes.post("/api/auth/login", AuthController.login);
-authRoutes.post("/api/auth/register", AuthController.register);
+export class AuthRoutes {
+  static get routes() {
+    const router = Router();
+    router.post("/login", AuthController.login);
+    router.post("/register", AuthController.register);
+    return router;
+  }
+}

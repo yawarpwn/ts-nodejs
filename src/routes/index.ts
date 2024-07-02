@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { AuthController } from "../controllers";
+import { AuthRoutes } from "./auth";
 
 export const appRoutes = Router();
 
-appRoutes.post("/api/auth", AuthController.login);
+appRoutes.use("/api/auth", AuthRoutes.routes);

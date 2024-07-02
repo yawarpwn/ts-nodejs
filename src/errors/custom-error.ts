@@ -1,4 +1,4 @@
-export class CustomError extends Error {
+export class HttpError extends Error {
   constructor(
     public readonly statusCode: number,
     public readonly message: string,
@@ -7,22 +7,22 @@ export class CustomError extends Error {
   }
 
   static badRequest(message: string) {
-    return new CustomError(400, message);
+    return new HttpError(400, message);
   }
 
   static unauthorized(message: string) {
-    return new CustomError(401, message);
+    return new HttpError(401, message);
   }
 
   static forbidden(message: string) {
-    return new CustomError(403, message);
+    return new HttpError(403, message);
   }
 
   static notFound(message: string) {
-    return new CustomError(404, message);
+    return new HttpError(404, message);
   }
 
   static internalServerError(message: string = "Internal Server Error") {
-    return new CustomError(500, message);
+    return new HttpError(500, message);
   }
 }
