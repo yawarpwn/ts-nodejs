@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { AuthModel } from "../models";
-import { CustomError } from "../domain";
+import { CustomError } from "../errors/custom-error";
 
 export class AuthDto {
   constructor(

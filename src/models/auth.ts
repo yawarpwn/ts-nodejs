@@ -9,7 +9,7 @@ export const turso = createClient({
 });
 
 import { AuthDto } from "../controllers";
-import { CustomError } from "../domain";
+import { CustomError } from "../errors";
 
 class UserLoginEntity {
   constructor(

@@ -1,15 +1,8 @@
-import express, { Router } from "express";
-import { appRoutes } from "../routes";
+import express from "express";
+import { envs } from "../config/envs";
 import { authRoutes } from "../routes/auth";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
-const PORT = process.env.PORT || 3000;
-
-interface Options {
-  port?: number;
-  routes: Router;
-}
 
 export class Server {
   private readonly app = express();
@@ -23,9 +16,9 @@ export class Server {
 
     this.app.use(authRoutes);
 
-    this.app.listen(PORT, () => {
+    this.app.listen(envs.PORT, () => {
       console.log("other app 2");
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server running on port ${envs.PORT}`);
     });
   }
 }
