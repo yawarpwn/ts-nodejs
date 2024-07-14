@@ -1,6 +1,6 @@
 import { db } from '../db'
 import { asc, count, eq, getTableColumns, gt, sql } from 'drizzle-orm'
-import { productsTable } from '../database'
+import { productsTable } from '../db/schema'
 import { commentsTable, type InsertProduct, SelectProduct, SelectComment } from '../db/schema'
 
 export class ProductsModel {
@@ -13,7 +13,7 @@ export class ProductsModel {
     return db.select().from(productsTable).where(eq(productsTable.id, id))
   }
 
-  static async create(data: any) {
+  static async create(data: InsertProduct) {
     await db.insert(productsTable).values(data)
   }
 

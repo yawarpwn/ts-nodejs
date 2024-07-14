@@ -7,7 +7,23 @@ export const productsTable = sqliteTable('products', {
   createAt: text('create_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
-  updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date()),
+  updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(
+    () => new Date(),
+  ),
+})
+
+export const imagesTable = sqliteTable('images', {
+  id: text('id').primaryKey(),
+  url: text('url').notNull(),
+  productId: text('product_id')
+    .notNull()
+    .references(() => productsTable.id, { onDelete: 'cascade' }),
+  createAt: text('create_at')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(
+    () => new Date(),
+  ),
 })
 
 export const commentsTable = sqliteTable('comments', {
@@ -26,19 +42,6 @@ export const usersTable = sqliteTable('users', {
   email: text('email').unique().notNull(),
   password: text('password').notNull(),
 })
-
-// export const postsTable = sqliteTable('posts', {
-//   id: integer('id').primaryKey(),
-//   title: text('title').notNull(),
-//   content: text('content').notNull(),
-//   userId: integer('user_id')
-//     .notNull()
-//     .references(() => usersTable.id, { onDelete: 'cascade' }),
-//   createdAt: text('created_at')
-//     .default(sql`(CURRENT_TIMESTAMP)`)
-//     .notNull(),
-//   updateAt: integer('updated_at', { mode: 'timestamp' }).$onUpdate(() => new Date()),
-// });
 
 export type InsertProduct = typeof productsTable.$inferInsert
 export type SelectProduct = typeof productsTable.$inferSelect
