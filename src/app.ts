@@ -15,7 +15,7 @@ async function main() {
   app.use('/api/products', productsRouter)
 
   app.listen(envs.PORT, () => {
-    console.log(`Server running on port ${envs.PORT}`)
+    console.log(`Server running on port -- ${envs.PORT}`)
   })
 }
 

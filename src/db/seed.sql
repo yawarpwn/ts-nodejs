@@ -1,14 +1,13 @@
+-- Users
 DROP TABLE IF EXISTS users;
-
 CREATE TABLE IF NOT EXISTS users (
     id text PRIMARY KEY,
     email text UNIQUE NOT NULL,
     pass text NOT NULL
 );
 
-
+-- Products
 DROP TABLE IF EXISTS products;
-
 CREATE TABLE IF NOT EXISTS products (
     id text PRIMARY KEY
     NOT NULL,
@@ -18,10 +17,10 @@ CREATE TABLE IF NOT EXISTS products (
     create_at text DEFAULT current_timestamp
     NOT NULL,
     update_at timestamp
-);-- Comments
+);
 
+-- Comments
 DROP TABLE IF EXISTS comments;
-
 CREATE TABLE IF NOT EXISTS comments (
     id text PRIMARY KEY NOT NULL,
     body text NOT NULL,
